@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import BigNumber from "bignumber.js";
 import { erc20ABI } from "../../configure";
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   STAKE_FETCH_BALANCE_BEGIN,
   STAKE_FETCH_BALANCE_SUCCESS,
@@ -27,6 +27,7 @@ export function fetchBalance(index) {
       const { address, web3 } = home;
       const { pools } = stake;
       const { tokenAddress } = pools[index];
+
       const contract = new web3.eth.Contract(erc20ABI, tokenAddress);
       contract.methods.balanceOf(address).call({ from: address }).then(
         data => {

@@ -1,4 +1,5 @@
 export { useFetchPoolsInfo } from './fetchPoolsInfo';
+export { useFetchPoolData } from './fetchPoolData';
 export { useCheckApproval  } from './checkApproval';
 export { useFetchBalance } from './fetchBalance';
 export { useFetchCurrentlyStaked } from './fetchCurrentlyStaked';

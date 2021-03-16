@@ -1,55 +1,117 @@
-/* eslint-disable */
-import React from "react";
-// nodejs library to set properties for components
-import PropTypes from "prop-types";
-// nodejs library that concatenates classes
-import classNames from "classnames";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-// @material-ui/icons
-import Favorite from "@material-ui/icons/Favorite";
+import React, { memo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core/styles';
 
-import styles from "assets/jss/material-kit-pro-react/components/footerStyle.js";
+import styles from './styles';
 
 const useStyles = makeStyles(styles);
 
-export default function Footer(props) {
-  const { children, content, theme, big, className } = props;
+const Footer = () => {
   const classes = useStyles();
-  const themeType =
-    theme === "transparent" || theme == undefined ? false : true;
-  const footerClasses = classNames({
-    [classes.footer]: true,
-    [classes[theme]]: themeType,
-    [classes.big]: big || children !== undefined,
-    [className]: className !== undefined
-  });
-  const aClasses = classNames({
-    [classes.a]: true
-  });
+  const { t } = useTranslation();
 
   return (
-    <footer className={footerClasses}>
-      <div className={classes.container}>
-        {children !== undefined ? (
-          <div>
-            <div className={classes.content}>{children}</div>
-            <hr />
-          </div>
-        ) : (
-          " "
-        )}
-        {content}
-        <div className={classes.clearFix} />
-      </div>
-    </footer>
-  );
-}
+    <div className={classes.root}>
+      <div className={classes.column}>
+        <div className={classes.title}>bm.finance</div>
+        <a
+          href="https://docs.bm.finance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fas fa-book ${classes.linkIcon}`}></i>
+          <span>docs</span>
+        </a>
 
-Footer.propTypes = {
-  theme: PropTypes.oneOf(["dark", "white", "transparent"]),
-  big: PropTypes.bool,
-  content: PropTypes.node.isRequired
+        <a
+          href="https://medium.com/bmfinance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fab fa-medium ${classes.linkIcon}`}></i>
+          <span>{t('news')}</span>
+        </a>
+
+        <a
+          href="https://github.com/bmfinance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fab fa-github ${classes.linkIcon}`}></i>
+          <span>{t('source')}</span>
+        </a>
+      </div>
+
+      <div className={classes.column}>
+        <div className={classes.title}>{t('products')}</div>
+        <a
+          href="https://gov.bm.finance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fas fa-landmark ${classes.linkIcon}`}></i>
+          <span>gov</span>
+        </a>
+
+        <a
+          href="https://vote.bm.finance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fas fa-vote-yea ${classes.linkIcon}`}></i>
+          <span>vote</span>
+        </a>
+
+        <a
+          href="https://app.bm.finance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fas fa-hand-holding-usd ${classes.linkIcon}`}></i>
+          <span>app</span>
+        </a>
+      </div>
+
+      <div className={classes.column}>
+        <div className={classes.title}>{t('socials')}</div>
+        <a
+          href="https://twitter.com/bmfinance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fab fa-twitter ${classes.linkIcon}`}></i>
+
+          <span>twitter</span>
+        </a>
+        <a
+          href="https://t.me/bmfinance"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fab fa-telegram ${classes.linkIcon}`}></i>
+
+          <span>telegram</span>
+        </a>
+        <a
+          href="https://discord.gg/yq8wfHd"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={classes.link}
+        >
+          <i className={`fab fa-discord ${classes.linkIcon}`}></i>
+          <span>discord</span>
+        </a>
+      </div>
+    </div>
+  );
 };
+
+export default memo(Footer);

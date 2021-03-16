@@ -1,30 +1,40 @@
-
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { initReactI18next } from 'react-i18next';
 
+import translationCN from './locales/cn/translation.json';
+import translationDE from './locales/de/translation.json';
 import translationEN from './locales/en/translation.json';
-import translationZH from './locales/zh/translation.json';
-import translationJA from './locales/ja/translation.json';
-import translationTH from './locales/th/translation.json';
+import translationES from './locales/es/translation.json';
+import translationFR from './locales/fr/translation.json';
+import translationHI from './locales/hi/translation.json';
+import translationID from './locales/id/translation.json';
+import translationIT from './locales/it/translation.json';
 import translationKO from './locales/ko/translation.json';
+import translationPT from './locales/pt/translation.json';
+import translationRU from './locales/ru/translation.json';
+import translationSE from './locales/se/translation.json';
+import translationTR from './locales/tr/translation.json';
+import translationUK from './locales/uk/translation.json';
+import translationZH from './locales/zh/translation.json';
 
 const resources = {
-  en: {
-    translation: translationEN
-  },
-  zh: {
-    translation: translationZH
-  },
-  ja: {
-    translation: translationJA
-  },
-  th: {
-    translation: translationTH
-  },
-  ko: {
-    translation: translationKO
-  }
+  cn: { translation: translationCN },
+  de: { translation: translationDE },
+  en: { translation: translationEN },
+  es: { translation: translationES },
+  fr: { translation: translationFR },
+  hi: { translation: translationHI },
+  id: { translation: translationID },
+  it: { translation: translationIT },
+  ko: { translation: translationKO },
+  pt: { translation: translationPT },
+  ru: { translation: translationRU },
+  se: { translation: translationSE },
+  tr: { translation: translationTR },
+  uk: { translation: translationUK },
+  zh: { translation: translationZH },
+  // TODO: more translations
 };
 
 i18n
@@ -38,7 +48,7 @@ i18n
   // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
     resources,
-    fallbackLng: 'zh',
+    fallbackLng: 'en',
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

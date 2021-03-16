@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   STAKE_FETCH_EXIT_BEGIN,
   STAKE_FETCH_EXIT_SUCCESS,
@@ -42,7 +42,7 @@ export function fetchExit(index) {
         .on('receipt', function(receipt){
           dispatch(enqueueSnackbar({
             key: new Date().getTime() + Math.random(),
-            message: '交易确认',
+            message: 'Success',
             options: {
               variant: 'success',
             },

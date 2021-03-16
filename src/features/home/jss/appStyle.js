@@ -1,17 +1,19 @@
-import { container } from "assets/jss/material-kit-pro-react.js";
+import { container } from 'assets/jss/material-kit-pro-react.js';
 
 const appStyle = theme => ({
   page: {
-    backgroundColor: "#232733",
-    minHeight: "100vh"
+    backgroundColor: '#fbf9f6',
+    minHeight: '100vh',
+    position: 'relative',
+    overflow: 'hidden',
   },
   container: {
     ...container,
     zIndex: 1,
   },
-  children:{
-    minHeight:'77vh',
-  }
+  children: {
+    minHeight: '77vh',
+  },
 });
 
 export default appStyle;

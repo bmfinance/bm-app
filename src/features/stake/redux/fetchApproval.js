@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { erc20ABI } from "../../configure";
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   STAKE_FETCH_APPROVAL_BEGIN,
   STAKE_FETCH_APPROVAL_SUCCESS,
@@ -44,7 +44,7 @@ export function fetchApproval(index) {
         .on('receipt', function(receipt){
           dispatch(enqueueSnackbar({
             key: new Date().getTime() + Math.random(),
-            message: '交易确认',
+            message: 'Success',
             options: {
               variant: 'success',
             },

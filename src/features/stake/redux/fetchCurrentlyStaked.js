@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import BigNumber from "bignumber.js";
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   STAKE_FETCH_CURRENTLY_STAKED_BEGIN,
   STAKE_FETCH_CURRENTLY_STAKED_SUCCESS,
@@ -31,7 +31,7 @@ export function fetchCurrentlyStaked(index) {
         data => {
           dispatch({
             type: STAKE_FETCH_CURRENTLY_STAKED_SUCCESS,
-            data: new BigNumber(data).toNumber(),
+            data: new BigNumber(data).toString(),
             index
           });
           resolve(data);

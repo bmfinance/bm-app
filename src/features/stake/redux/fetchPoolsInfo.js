@@ -20,7 +20,8 @@ export function fetchPoolsInfo() {
       // doRequest is a placeholder Promise. You should replace it with your own logic.
       // See the real-word example at:  https://github.com/supnate/rekit/blob/master/src/features/home/redux/fetchRedditReactjsList.js
       // args.error here is only for test coverage purpose.
-      const doRequest = axios.get('https://api1.dfi.money/stake/pools/');
+      const t = Math.trunc(Date.now() / (5 * 60 * 1000));
+      const doRequest = axios.get(`https://api.bm.finance/stake?_=${t}`);
 
       doRequest.then(
         res => {
@@ -34,7 +35,7 @@ export function fetchPoolsInfo() {
         err => {
           dispatch({ type: STAKE_FETCH_POOLS_INFO_FAILURE });
           reject(err);
-        },
+        }
       );
     });
     return promise;
@@ -52,7 +53,7 @@ export function useFetchPoolsInfo() {
       poolsInfo: state.stake.poolsInfo,
       fetchPoolsInfoPending: state.stake.fetchPoolsInfoPending,
     }),
-    shallowEqual,
+    shallowEqual
   );
 
   const boundAction = useCallback(() => dispatch(fetchPoolsInfo()), [dispatch]);
@@ -61,7 +62,7 @@ export function useFetchPoolsInfo() {
     fetchPoolsInfo: boundAction,
     pools,
     poolsInfo,
-    fetchPoolsInfoPending
+    fetchPoolsInfoPending,
   };
 }
 
@@ -71,22 +72,30 @@ export function reducer(state, action) {
       // Just after a request is sent
       return {
         ...state,
-        fetchPoolsInfoPending: true
+        fetchPoolsInfoPending: true,
       };
 
     case STAKE_FETCH_POOLS_INFO_SUCCESS:
       // The request is success
+      for (let index in action.data) {
+        for (let key in state.poolsInfo) {
+          if (state.poolsInfo[key].id === action.data[index].id) {
+            state.poolsInfo[key] = action.data[index];
+            break;
+          }
+        }
+      }
+
       return {
         ...state,
-        poolsInfo: action.data,
-        fetchPoolsInfoPending: false
+        fetchPoolsInfoPending: false,
       };
 
     case STAKE_FETCH_POOLS_INFO_FAILURE:
       // The request is failed
       return {
         ...state,
-        fetchPoolsInfoPending: false
+        fetchPoolsInfoPending: false,
       };
 
     default:

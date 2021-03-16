@@ -1,7 +1,13 @@
-import Web3 from "web3";
+import Web3 from 'web3';
 import { useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { HOME_CONNECT_WALLET_BEGIN, HOME_CONNECT_WALLET_SUCCESS, HOME_CONNECT_WALLET_FAILURE, HOME_ACCOUNTS_CHANGED, HOME_NETWORK_CHANGED } from './constants';
+import {
+  HOME_CONNECT_WALLET_BEGIN,
+  HOME_CONNECT_WALLET_SUCCESS,
+  HOME_CONNECT_WALLET_FAILURE,
+  HOME_ACCOUNTS_CHANGED,
+  HOME_NETWORK_CHANGED,
+} from './constants';
 import { disconnectWallet } from './actions';
 
 export function connectWallet(web3Modal) {
@@ -13,62 +19,66 @@ export function connectWallet(web3Modal) {
       web3.eth.extend({
         methods: [
           {
-            name: "chainId",
-            call: "eth_chainId",
-            outputFormatter: web3.utils.hexToNumber
-          }
-        ]
+            name: 'chainId',
+            call: 'eth_chainId',
+            outputFormatter: web3.utils.hexToNumber,
+          },
+        ],
       });
       const subscribeProvider = provider => {
-        if (!provider.on) { 
-          console.log("provider.on")
+        if (!provider.on) {
           return;
-        };
+        }
         provider.on('close', () => {
           dispatch(disconnectWallet(web3, web3Modal));
         });
-        provider.on("disconnect", async () => {
-          console.log("provider.close")
+        provider.on('disconnect', async () => {
           dispatch(disconnectWallet(web3, web3Modal));
         });
-        provider.on("accountsChanged", async (accounts) => {
-          console.log("provider.accountsChanged")
-          console.log(accounts[0])
+        provider.on('accountsChanged', async accounts => {
           if (accounts[0]) {
-            dispatch({type: HOME_ACCOUNTS_CHANGED, data: accounts[0]});
+            dispatch({ type: HOME_ACCOUNTS_CHANGED, data: accounts[0] });
           } else {
             dispatch(disconnectWallet(web3, web3Modal));
           }
         });
-        provider.on("networkChanged", async (networkId) => {
-          dispatch({type: HOME_NETWORK_CHANGED, data: networkId});
+        provider.on('chainChanged', async chainId => {
+          const networkId = web3.utils.isHex(chainId) ? web3.utils.hexToNumber(chainId) : chainId;
+          dispatch({ type: HOME_NETWORK_CHANGED, data: networkId });
         });
-      }
-      await subscribeProvider(provider);
-      
+      };
+      subscribeProvider(provider);
+
       const accounts = await web3.eth.getAccounts();
       const address = accounts[0];
-      const networkId = await web3.eth.net.getId();
-      dispatch({type: HOME_CONNECT_WALLET_SUCCESS, data: {web3, address, networkId}})
+      let networkId = await web3.eth.getChainId();
+      if (networkId === 86) {
+        // Trust provider returns an incorrect chainId for BSC.
+        networkId = 56;
+      }
+
+      dispatch({ type: HOME_CONNECT_WALLET_SUCCESS, data: { web3, address, networkId } });
     } catch (error) {
       dispatch({ type: HOME_CONNECT_WALLET_FAILURE });
     }
-    
   };
 }
 
 export function useConnectWallet() {
   const dispatch = useDispatch();
-  const {web3, address, networkId, connected, connectWalletPending} = useSelector(state => ({
-    web3:state.home.web3,
-    address:state.home.address,
-    networkId: state.home.networkId,
-    connected: state.home.connected,
-    connectWalletPending:state.home.connectWalletPending,
-  }), shallowEqual);
+  const { web3, address, networkId, connected, connectWalletPending } = useSelector(
+    state => ({
+      web3: state.home.web3,
+      address: state.home.address,
+      networkId: state.home.networkId,
+      connected: state.home.connected,
+      connectWalletPending: state.home.connectWalletPending,
+    }),
+    shallowEqual
+  );
   const boundAction = useCallback(data => dispatch(connectWallet(data)), [dispatch]);
 
-  return { web3, address, networkId, connected,connectWalletPending, connectWallet: boundAction };
+  return { web3, address, networkId, connected, connectWalletPending, connectWallet: boundAction };
 }
 
 export function reducer(state, action) {
@@ -76,7 +86,7 @@ export function reducer(state, action) {
     case HOME_CONNECT_WALLET_BEGIN:
       return {
         ...state,
-        connectWalletPending: true
+        connectWalletPending: true,
       };
 
     case HOME_CONNECT_WALLET_SUCCESS:
@@ -86,24 +96,24 @@ export function reducer(state, action) {
         address: process.env.ACCOUNT ? process.env.ACCOUNT : action.data.address,
         networkId: action.data.networkId,
         connected: true,
-        connectWalletPending: false
+        connectWalletPending: false,
       };
 
     case HOME_NETWORK_CHANGED:
       return {
         ...state,
-        networkId: action.data
-      }
+        networkId: action.data,
+      };
 
     case HOME_ACCOUNTS_CHANGED:
       return {
         ...state,
-        address: action.data
-      }
+        address: action.data,
+      };
     case HOME_CONNECT_WALLET_FAILURE:
       return {
         ...state,
-        connectWalletPending: false
+        connectWalletPending: false,
       };
 
     default:

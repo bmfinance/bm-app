@@ -1,11 +1,10 @@
 export { approval } from './approval';
-export { fetchGasPrice } from './fetchGasPrice';
 export { fetchAllowance } from './fetchAllowance';
 export { fetchBalance } from './fetchBalance';
 export { deposit } from './deposit';
-export { depositEth } from './depositEth';
+export { depositBnb } from './depositBnb';
 export { withdraw } from './withdraw';
-export { withdrawEth } from './withdrawEth';
-export { fetchPricePerFullShare } from './fetchPricePerFullShare';
-export { zapOrSwap } from './zapOrSwap';
-export { statke } from './stake';
+export { withdrawBnb } from './withdrawBnb';
+export { fetchPrice } from './fetchPrice';
+export { harvest } from './harvest';
+export { createWeb3Modal } from './createWeb3Modal';

@@ -1,85 +1,70 @@
-import React, { useState} from "react";
-import { Link } from "react-router-dom";
-// nodejs library that concatenates classes
-import classNames from "classnames";
-// nodejs library to set properties for components
-import PropTypes from "prop-types";
-// @material-ui/core components
-import { makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import Hidden from "@material-ui/core/Hidden";
-import Drawer from "@material-ui/core/Drawer";
-import Avatar from '@material-ui/core/Avatar';
-// @material-ui/icons
-import Menu from "@material-ui/icons/Menu";
-import Close from "@material-ui/icons/Close";
-// core components
-import styles from "assets/jss/material-kit-pro-react/components/headerStyle.js";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
+import Hidden from '@material-ui/core/Hidden';
+import Drawer from '@material-ui/core/Drawer';
+import Menu from '@material-ui/icons/Menu';
+import Close from '@material-ui/icons/Close';
+import WbSunny from '@material-ui/icons/WbSunny';
+import NightsStay from '@material-ui/icons/NightsStay';
+
+import styles from './styles';
 
 const useStyles = makeStyles(styles);
 
-export default function Header(props) {
+const Header = ({ links, isNightMode, setNightMode }) => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const classes = useStyles();
-  React.useEffect(() => {
-    if (props.changeColorOnScroll) {
-      window.addEventListener("scroll", headerColorChange);
-    }
-    return function cleanup() {
-      if (props.changeColorOnScroll) {
-        window.removeEventListener("scroll", headerColorChange);
-      }
-    };
-  });
+  const { t } = useTranslation();
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  const headerColorChange = () => {
-    const { color, changeColorOnScroll } = props;
 
-    const windowsScrollTop = window.pageYOffset;
-    if (windowsScrollTop > changeColorOnScroll.height) {
-      document.body
-        .getElementsByTagName("header")[0]
-        .classList.remove(classes[color]);
-      document.body
-        .getElementsByTagName("header")[0]
-        .classList.add(classes[changeColorOnScroll.color]);
-    } else {
-      document.body
-        .getElementsByTagName("header")[0]
-        .classList.add(classes[color]);
-      document.body
-        .getElementsByTagName("header")[0]
-        .classList.remove(classes[changeColorOnScroll.color]);
-    }
-  };
-
-  const { color, links, brand, fixed, absolute } = props;
-  const appBarClasses = classNames({
-    [classes.appBar]: true,
-    [classes[color]]: color,
-    [classes.absolute]: absolute,
-    [classes.fixed]: fixed
-  });
   return (
-    <AppBar className={appBarClasses}>
+    <AppBar className={`${classes.appBar} ${classes.dark}`}>
       <Toolbar className={classes.container}>
-        <Button className={classes.title}>
-          <Avatar alt="YFII" src={require(`../../images/YFII-logo.png`)} />
-          <Link to="/">
-            {brand}
-          </Link>
+        <Button href="/" className={classes.title}>
+          <Hidden xsDown>
+            <img
+              alt="BMB"
+              src={require(`images/single-assets/BMB.svg`)}
+              height={'40px'}
+              className={classes.logo}
+            />
+            bm.finance
+          </Hidden>
+          <Hidden smUp>
+            <img
+              alt="BMB"
+              src={require(`images/single-assets/BMB.svg`)}
+              height={'35px'}
+              className={classes.logo}
+            />
+          </Hidden>
         </Button>
+
+        <span>
+          <Hidden mdDown>
+            {renderLink('barn', 'barn', 'warehouse', classes)}
+            {renderLink('vote', 'vote', 'vote-yea', classes)}
+            {renderLink('dashboard', t('stats'), 'chart-bar', classes)}
+            {renderLink('docs', 'docs', 'book', classes)}
+          </Hidden>
+          {renderLink('buy', t('buy'), 'dollar-sign', classes)}
+          {renderBoost(classes)}
+        </span>
+
         <Hidden smDown implementation="css">
           <div className={classes.collapse}>{links}</div>
         </Hidden>
         <Hidden mdUp>
           <IconButton
-            color="inherit"
+            className={classes.iconButton}
             aria-label="open drawer"
             onClick={handleDrawerToggle}
           >
@@ -87,13 +72,14 @@ export default function Header(props) {
           </IconButton>
         </Hidden>
       </Toolbar>
+
       <Hidden mdUp implementation="js">
         <Drawer
           variant="temporary"
-          anchor={"right"}
+          anchor={'right'}
           open={mobileOpen}
           classes={{
-            paper: classes.drawerPaper
+            paper: classes.drawerPaper,
           }}
           onClose={handleDrawerToggle}
         >
@@ -106,50 +92,57 @@ export default function Header(props) {
             <Close />
           </IconButton>
           <div className={classes.appResponsive}>{links}</div>
+          <div style={{ textAlign: 'center' }}>
+            {renderLinkSidebar('barn', 'barn', 'warehouse', classes)}
+            {renderLinkSidebar('vote', 'vote', 'vote-yea', classes)}
+            {renderLinkSidebar('dashboard', t('stats'), 'chart-bar', classes)}
+            {renderLinkSidebar('docs', 'docs', 'book', classes)}
+            {renderLinkSidebar('buy', t('buy'), 'dollar-sign', classes)}
+            <IconButton onClick={setNightMode} className={classes.icon}>
+              {isNightMode ? <WbSunny /> : <NightsStay />}
+            </IconButton>
+          </div>
         </Drawer>
       </Hidden>
     </AppBar>
   );
-}
-
-Header.defaultProp = {
-  color: "white"
 };
 
-Header.propTypes = {
-  color: PropTypes.oneOf([
-    "primary",
-    "info",
-    "success",
-    "warning",
-    "danger",
-    "transparent",
-    "white",
-    "rose",
-    "dark"
-  ]),
-  links: PropTypes.node,
-  brand: PropTypes.string,
-  fixed: PropTypes.bool,
-  absolute: PropTypes.bool,
-  // this will cause the sidebar to change the color from
-  // props.color (see above) to changeColorOnScroll.color
-  // when the window.pageYOffset is heigher or equal to
-  // changeColorOnScroll.height and then when it is smaller than
-  // changeColorOnScroll.height change it back to
-  // props.color (see above)
-  changeColorOnScroll: PropTypes.shape({
-    height: PropTypes.number.isRequired,
-    color: PropTypes.oneOf([
-      "primary",
-      "info",
-      "success",
-      "warning",
-      "danger",
-      "transparent",
-      "white",
-      "rose",
-      "dark"
-    ]).isRequired
-  })
+const renderLink = (name, label, icon, classes) => {
+  return (
+    <a
+      href={getLinkUrl(name)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={classes.link}
+      style={{ marginLeft: '5px', marginRight: '5px' }}
+    >
+      <i className={`fas fa-${icon} ${classes.icon}`} />
+      <span>{label}</span>
+    </a>
+  );
 };
+
+const renderBoost = classes => {
+  return (
+    <a className={classes.btnBoost} href="/stake">
+      <img alt="Boost" src={require('../../images/stake/boost.svg')} />
+    </a>
+  );
+};
+
+const renderLinkSidebar = (name, label, icon, classes) => {
+  return (
+    <div style={{ width: '100%', paddingTop: '10px' }}>
+      {renderLink(name, label, icon, classes)}
+    </div>
+  );
+};
+
+const getLinkUrl = name => {
+  return name === 'buy'
+    ? 'https://1inch.exchange/#/r/0xF4cb25a1FF50E319c267b3E51CBeC2699FB2A43B/WBNB/BIFI'
+    : `https://${name}.bm.finance`;
+};
+
+export default Header;
